@@ -85,3 +85,5 @@ The system supports two audit types passed during CSV processing:
 
 - `RegularAudit` — standard periodic security audit
 - `PreReleaseAudit` — scan run before a release
+
+Please contact me if you have questions in my linkedin account https://www.linkedin.com/in/romualdebaoy/
