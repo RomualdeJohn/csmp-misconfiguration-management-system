@@ -25,30 +25,6 @@ Core features:
 - **slowapi** — rate limiting
 - **Docker** + **Kubernetes** — containerized deployment
 
-## Project structure
-
-```
-├── app/
-│   ├── main.py              # app entry point, middleware, router registration
-│   ├── routers/
-│   │   ├── authentication.py      # login endpoint
-│   │   ├── misconfiguration.py    # CRUD endpoints
-│   │   └── process_csv.py         # CSV upload endpoints
-│   ├── core/
-│   │   ├── auth.py          # JWT token logic
-│   │   ├── services.py      # database operations, business logic
-│   │   ├── clients.py       # S3 and Domo clients
-│   │   ├── migrate.py       # Domo sync and S3 backup
-│   │   ├── setup_db.py      # DB connection and initialization
-│   │   └── logger.py        # structured logging
-│   └── schemas/
-│       └── schema.py        # Pydantic models
-├── k8s/                     # Kubernetes manifests
-├── Dockerfile
-├── docker-compose.yml
-└── requirements.txt
-```
-
 ## API endpoints
 
 | Method | Path | Description |
