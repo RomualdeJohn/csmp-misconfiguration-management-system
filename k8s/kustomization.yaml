@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - networkpolicy.yaml
+
+configMapGenerator:
+  - name: init-scripts
+    files:
+      - fetch-backup-database.sh=init-scripts/fetch-backup-database.sh
+
+commonLabels:
+  app: cspm-misconfig-mgmt-be
+  project: cspm-misconfig-mgmt
+

@@ -1,0 +1,32 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        WORKERS: 1
+    container_name: csmp-misconfig-mgmt-system-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - LOG_LEVEL=INFO
+      - LOG_TO_FILE=false
+      - LOG_TO_CONSOLE=true
+      - WORKERS=1
+    volumes:
+      - ./backend/app/database:/app/app/database
+      - ./backend/app/config.ini:/app/app/config.ini:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+

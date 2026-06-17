@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cspm-misconfig-mgmt-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cspm-misconfig-mgmt-be
+  template:
+    metadata:
+      labels:
+        app: cspm-misconfig-mgmt-be
+    spec:
+      initContainers:
+      - name: fetch-backup-database-from-s3
+        image: amazon/aws-cli:latest
+        command: ["/bin/sh", "/scripts/fetch-backup-database.sh"]
+        volumeMounts:
+        - name: database
+          mountPath: /data
+        - name: config-volume
+          mountPath: /config/config.ini
+          subPath: config.ini
+        - name: init-scripts
+          mountPath: /scripts
+
+      containers:
+      - name: cspm-misconfig-mgmt-be
+        image: registry-jpw2.r-local.net/oss-operation-cspm-system/cspm-misconfig-mgmt-system-be:latest
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        env:
+        - name: LOG_LEVEL
+          value: "WARNING"
+        - name: LOG_TO_FILE
+          value: "true"
+        - name: LOG_TO_CONSOLE
+          value: "true"
+        - name: WORKERS
+          value: "1"
+        - name: ENABLE_AUTO_BACKUP
+          value: "true"
+        envFrom:
+        - configMapRef:
+            name: cspm-misconfig-mgmt-config
+            optional: true
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+        volumeMounts:
+        - name: database
+          mountPath: /app/app/database
+        - name: logs
+          mountPath: /app/logs
+        - name: config-volume
+          mountPath: /app/app/config.ini
+          subPath: config.ini
+      volumes:
+      - name: database
+        emptyDir: {}
+      - name: logs
+        emptyDir: {}
+      - name: config-volume
+        secret:
+          secretName: cspm-misconfig-mgmt-config
+          items:
+          - key: config.ini
+            path: config.ini
+      - name: init-scripts
+        configMap:
+          name: init-scripts
+          defaultMode: 0755
+      imagePullSecrets:
+        - name: registry-bot
+        - name: harbor-bot
+      automountServiceAccountToken: true
+

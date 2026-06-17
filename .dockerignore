@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Configuration files (will be mounted via K8s ConfigMap)
+app/config.ini
+config.ini
+
+# Database files (if you want fresh DB in container)
+# Uncomment the line below if you don't want to copy existing database
+app/database/*.db
+app/database/*.db-shm
+app/database/*.db-wal
+
+.venv/
+

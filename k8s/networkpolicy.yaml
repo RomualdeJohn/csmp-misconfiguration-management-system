@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cspm-misconfig-mgmt-be-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: cspm-misconfig-mgmt-be
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: cspm-misconfig-mgmt-fe
+    ports:
+    - protocol: TCP
+      port: 8000
+  egress:
+  - {}
+
