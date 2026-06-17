@@ -79,6 +79,17 @@ s3_backup_bucket = your-bucket-name
 endpoint_url = ...
 ```
 
+## CI/CD
+
+The pipeline is managed via Jenkins and runs on a Kubernetes agent. On every build it:
+
+1. Builds the container image using `buildah`
+2. Tags and pushes to a private registry
+3. Generates a Kubernetes manifest via `kustomize`
+4. Applies the manifest to the cluster namespace
+
+The `SERVICE` parameter lets you deploy just the backend or all services at once.
+
 ## Audit types
 
 The system supports two audit types passed during CSV processing:
